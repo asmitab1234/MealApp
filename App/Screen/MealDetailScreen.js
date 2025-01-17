@@ -1,16 +1,26 @@
 import { Image, StyleSheet, Text, View, ScrollView, Button } from 'react-native';
-import React, { useLayoutEffect } from 'react';
+import React, { useContext, useLayoutEffect } from 'react';
 import { MEALS } from '../../Data/Dummy-data';
 import MealDetails from '../Component/MealDetails';
 import Subtitle from '../Component/MealDetail/Subtitle';
 import List from '../Component/MealDetail/List';
 import { useNavigation } from '@react-navigation/native';
 import IconButton from '../Component/IconButton';
+import { FavoritesContext } from '../../Store/Context/favourites-Context';
+import { useDispatch, useSelector } from 'react-redux';
+import { addFavorite, removeFavorite } from '../../Store/Redux/favorites';
 
 const MealDetailScreen = ({ route }) => {
+
+    // const favouriteMealCtx = useContext(FavoritesContext)
+    const favouriteMeals = useSelector((state) => state.favoriteMeals.ids);
+    const dispatch = useDispatch()
+
     const { mealId } = route.params;
 
     const selectedMeal = MEALS.find((meal) => meal.id === mealId);
+
+    const mealIsFavourite = favouriteMeals.includes(mealId)
 
     if (!selectedMeal) {
         return (
@@ -20,19 +30,27 @@ const MealDetailScreen = ({ route }) => {
         );
     }
     const navigation = useNavigation()
-    function buttonPressHandeler() {
-        console.log('pressed!')
+    function chaneFavouriteButton() {
+        if (mealIsFavourite) {
+            dispatch(removeFavorite({ id: mealId }));
+        } else {
+            dispatch(addFavorite({ id: mealId }));
+        }
     }
 
     useLayoutEffect(() => {
         navigation.setOptions({
             headerRight: () => {
                 return (
-                    <IconButton icon='star' color='#fff' onPress={buttonPressHandeler} />
+                    <IconButton
+                        icon={mealIsFavourite ? 'star' : 'star-outline'}
+                        color='#fff'
+                        onPress={chaneFavouriteButton}
+                    />
                 )
             }
         })
-    }, [navigation, buttonPressHandeler])
+    }, [navigation, chaneFavouriteButton])
 
     return (
         <ScrollView style={styles.rootContainer}>

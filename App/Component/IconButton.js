@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import React from 'react';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const IconButton = ({ icon, onPress, color }) => {
   return (
@@ -11,7 +11,7 @@ const IconButton = ({ icon, onPress, color }) => {
       ]}
       onPress={onPress}
     >
-      <AntDesign name={icon} size={24} color={color} />
+      <Ionicons name={icon} size={24} color={color} />
     </Pressable>
   )
 };
